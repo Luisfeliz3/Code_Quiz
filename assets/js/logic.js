@@ -26,7 +26,10 @@ function startQuiz() {
   document.body.appendChild(questionsEl);
 
   // start timer
- 
+ setInterval(() => {
+  timerEl.innerHTML = time--;
+ }, 1000);
+
   // show starting time
 
 
@@ -50,7 +53,9 @@ let questionTitle = questions[currentQuestionIndex].title;
   }
 
   document.querySelector("#choices").addEventListener("click",function (e){
+    e.preventDefault(); 
     questionClick(e.target.innerHTML)
+    
   })
   // loop over choices
   // create new button for each choice
@@ -73,11 +78,16 @@ function questionClick(answerClicked) {
   // display new time on page
   // play "wrong" sound effect
   // else
+
+
   // play "right" sound effect
   // flash right/wrong feedback on page for half a second
   // move to next question
   // check if we've run out of questions
   // quizEnd
+
+
+
   // else
   // getQuestion
 }
