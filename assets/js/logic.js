@@ -1,3 +1,5 @@
+
+
 // variables to keep track of quiz state
 var currentQuestionIndex = 0;
 var time = questions.length * 15;
@@ -17,21 +19,38 @@ var sfxRight = new Audio("assets/sfx/correct.wav");
 var sfxWrong = new Audio("assets/sfx/incorrect.wav");
 
 function startQuiz() {
-  // hide start screen
+ document.querySelector("#start-screen").remove();
+ // hide start screen
 
   // un-hide questions section
+  document.body.appendChild(questionsEl);
 
   // start timer
-
+ 
   // show starting time
+
 
   getQuestion();
 }
 
 function getQuestion() {
   // get current question object from array
+var questionTitle = questions[currentQuestionIndex].title;
+console.log(questionTitle);
   // update title with current question
+  let questionTitleElement = document.querySelector("#question-title");
+  questionTitleElement.innerHTML=questionTitle;
+  questionsEl.setAttribute('class','show');
+  
   // clear out any old question choices
+for (const question of questions[currentQuestionIndex].choices) {
+  console.log(question);
+  let button = document.createElement('button');
+  
+  button.innerHTML=question;
+  document.querySelector("#choices").append(button)
+}
+
   // loop over choices
   // create new button for each choice
   // attach click event listener to each choice
