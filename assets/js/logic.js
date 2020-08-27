@@ -35,30 +35,40 @@ function startQuiz() {
 
 function getQuestion() {
   // get current question object from array
-var questionTitle = questions[currentQuestionIndex].title;
-console.log(questionTitle);
+let questionTitle = questions[currentQuestionIndex].title;
+
   // update title with current question
   let questionTitleElement = document.querySelector("#question-title");
   questionTitleElement.innerHTML=questionTitle;
   questionsEl.setAttribute('class','show');
   
   // clear out any old question choices
-for (const question of questions[currentQuestionIndex].choices) {
-  console.log(question);
-  let button = document.createElement('button');
-  
-  button.innerHTML=question;
-  document.querySelector("#choices").append(button)
-}
+  for (const question of questions[currentQuestionIndex].choices) {
+    let button = document.createElement('button');
+    button.innerHTML = question;
+    document.querySelector("#choices").append(button);
+  }
 
+  document.querySelector("#choices").addEventListener("click",function (e){
+    questionClick(e.target.innerHTML)
+  })
   // loop over choices
   // create new button for each choice
   // attach click event listener to each choice
   // display on the page
 }
 
-function questionClick() {
+function questionClick(answerClicked) {
+  
+  
+  
+  let questionAnswer = questions[currentQuestionIndex].answer;
+  console.log(answerClicked);
+  console.log(questionAnswer);
   // check if user guessed wrong
+  answerClicked !== questionAnswer ? sfxWrong.play():sfxRight.play();
+  
+
   // penalize time
   // display new time on page
   // play "wrong" sound effect
