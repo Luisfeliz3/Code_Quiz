@@ -4,6 +4,7 @@
 var currentQuestionIndex = 0;
 var time = questions.length * 15;
 var timerId;
+var score =0;
 
 // variables to reference DOM elements
 var questionsEl = document.getElementById("questions");
@@ -40,51 +41,42 @@ function getQuestion() {
   questionTitleElement.innerHTML = questionTitle;
   questionsEl.setAttribute('class', 'show');
   choicesEl.setAttribute('class', 'choices show');
-  
+
   // clear out any old question choices
   document.querySelector("#choices").innerHTML = " ";
-  document.querySelector("#choices").addEventListener("click", function (e) {
-    e.preventDefault();
-    questionClick(e.target.innerHTML)
-    
-  })
 
-  document.querySelector("#choices").innerHTML = " ";
+
   for (const question of questions[currentQuestionIndex].choices) {
-   
     let button = document.createElement('button');
-   
+    button.setAttribute('class', "button");
     button.innerHTML = question;
     document.querySelector("#choices").append(button);
   }
-  
 
+  document.querySelector("#choices").addEventListener("click", function (e) {
+   
+    questionClick(e.target.innerHTML);
+
+  })  
   // loop over choices
   // create new button for each choice
   // attach click event listener to each choice
-  // display on the page
+  // splay on the page
 }
 
 function questionClick(answerClicked) {
   let questionAnswer = questions[currentQuestionIndex].answer;
-  // console.log(answerClicked);
-  // console.log(questionAnswer);
-  // check if user guessed wrong
-  document.querySelector("#choices").innerHTML = "";
-  if (answerClicked !== questionAnswer) {
-    // penalize time
-    time = time - 15;
-    // display new time on page
-    // play "wrong" sound effect
-    sfxWrong.play();
-    feedbackEl.setAttribute('class', 'feedback show');
-    setTimeout(() => {
-      feedbackEl.setAttribute('class', 'feedback hide');
-    }, 500);
-    feedbackEl.textContent = "INCORRECT!";
-    setTimeout(() => {}, 500);
-  }
-  else {
+
+
+
+
+  
+  //check if user guessed wrong
+
+  if (answerClicked === questionAnswer) {
+
+
+
     // play "right" sound effect
     sfxRight.play();
     feedbackEl.setAttribute('class', 'feedback show');
@@ -92,12 +84,31 @@ function questionClick(answerClicked) {
       feedbackEl.setAttribute('class', 'feedback hide');
     }, 500);
     feedbackEl.textContent = "CORRECT!"
-    setTimeout(() => {}, 500);
+    setTimeout(() => { }, 500);
     // flash right/wrong feedback on page for half a second
 
+ 
   }
-  document.querySelector("#choices").innerHTML = "";
+  else {
+    // penalize time
+    time = time - 15;
+    console.log(answerClicked  + "-------------------->>>>>>>>>>>>>ANSWER CLICK");
+    console.log(questionAnswer+ "-------------------->>>>>>>>>>>>>QUESTION CLICK");
+    sfxWrong.play();
+    feedbackEl.setAttribute('class', 'feedback show');
+    setTimeout(() => {
+      feedbackEl.setAttribute('class', 'feedback hide');
+    }, 500);
+    feedbackEl.textContent = "INCORRECT!";
+    setTimeout(() => { }, 500);
+    score++;
+  }
+  
   currentQuestionIndex++
+
+  if (currentQuestionIndex === 3) {
+    quizEnd();
+  }
   getQuestion();
   // else
   // move to next question
@@ -108,10 +119,18 @@ function questionClick(answerClicked) {
 }
 
 function quizEnd() {
-  // stop timer
+  console.log('calling quix end');
   // show end screen
+  document.querySelector('#end-screen').setAttribute('class', 'show');
+  
+
   // show final score
+  document.querySelector('#final-score').innerHTML=score;
+
+  
   // hide questions section
+  questionsEl.remove();
+  localStorage.setItem("score", score)
 }
 
 function clockTick() {
@@ -121,6 +140,11 @@ function clockTick() {
 
 function saveHighscore() {
   // get value of input box
+  document.querySelector('initials').addEventListener('input', function (evt) {
+    cosole.log(this.value);
+});
+
+console.log(this.value)
   // make sure value wasn't empty
   // get saved scores from localstorage, or if not any, set to empty array
   // format new score object for current user
