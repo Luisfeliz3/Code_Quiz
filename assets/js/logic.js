@@ -14,19 +14,26 @@ var submitBtn = document.getElementById("submit");
 var startBtn = document.getElementById("start");
 var initialsEl = document.getElementById("initials");
 var feedbackEl = document.getElementById("feedback");
+var startScreen = document.getElementById("start-screen")
+var wrapper = document.getElementsByClassName('wrapper');
+var questionTitleElement = document.querySelector("#question-title");
 
 // sound effects
 var sfxRight = new Audio("assets/sfx/correct.wav");
 var sfxWrong = new Audio("assets/sfx/incorrect.wav");
 
 function startQuiz() {
-  document.querySelector("#start-screen").remove();
-  // hide start screen
+   // hide start screen
+  startScreen.setAttribute('class','hide');
+ 
   // un-hide questions section
-  document.body.appendChild(questionsEl);
+  questionsEl.setAttribute('class','show');
+
   // start timer
-  setInterval(() => {
-    timerEl.innerHTML = time--;
+
+
+    timerId = setInterval(() => {
+    clockTick()
   }, 1000);
   // show starting time
   getQuestion();
@@ -37,25 +44,32 @@ function getQuestion() {
   var questionTitle = questions[currentQuestionIndex].title;
 
   // update title with current question
-  let questionTitleElement = document.querySelector("#question-title");
   questionTitleElement.innerHTML = questionTitle;
-  questionsEl.setAttribute('class', 'show');
-  choicesEl.setAttribute('class', 'choices show');
 
   // clear out any old question choices
   document.querySelector("#choices").innerHTML = " ";
 
-
-  for (const question of questions[currentQuestionIndex].choices) {
-    let button = document.createElement('button');
-    button.setAttribute('class', "button");
-    button.innerHTML = question;
-    document.querySelector("#choices").append(button);
-  }
+for (let index = 0; index < questions[0].choices.length; index++) {
+     var choiceButtons = document.createElement('button');
+    choiceButtons.setAttribute("class", "button")
+    choiceButtons.innerHTML = questions[index].choices[index];
+    document.querySelector("#choices").append(choiceButtons);
+  
+}
+  // for (const choice of questions[currentQuestionIndex].choices) {
+  //   var choiceButtons = document.createElement('button');
+  //   choiceButtons.setAttribute("class", "button")
+  //   choiceButtons.innerHTML = choice;
+  //   document.querySelector("#choices").append(choiceButtons);
+  // }
 
   document.querySelector("#choices").addEventListener("click", function (e) {
-   
-    questionClick(e.target.innerHTML);
+    
+
+    if(!e.target.matches("buttons"))
+    e.preventDefault()
+    questionClick(e.target.textContent);
+
 
   })  
   // loop over choices
@@ -66,31 +80,12 @@ function getQuestion() {
 
 function questionClick(answerClicked) {
   let questionAnswer = questions[currentQuestionIndex].answer;
-
-
-
-
-  
   //check if user guessed wrong
 
-  if (answerClicked === questionAnswer) {
+  if (answerClicked !== questionAnswer) {
 
 
-
-    // play "right" sound effect
-    sfxRight.play();
-    feedbackEl.setAttribute('class', 'feedback show');
-    setTimeout(() => {
-      feedbackEl.setAttribute('class', 'feedback hide');
-    }, 500);
-    feedbackEl.textContent = "CORRECT!"
-    setTimeout(() => { }, 500);
-    // flash right/wrong feedback on page for half a second
-
- 
-  }
-  else {
-    // penalize time
+// penalize time
     time = time - 15;
     console.log(answerClicked  + "-------------------->>>>>>>>>>>>>ANSWER CLICK");
     console.log(questionAnswer+ "-------------------->>>>>>>>>>>>>QUESTION CLICK");
@@ -103,13 +98,31 @@ function questionClick(answerClicked) {
     setTimeout(() => { }, 500);
     score++;
   }
-  
-  currentQuestionIndex++
+  else {
+    
+    console.log(answerClicked.trim()  + "-------------------->>>>>>>>>>>>>ANSWER CLICK");
+    console.log(questionAnswer.trim()+ "-------------------->>>>>>>>>>>>>QUESTION CLICK");
+   
+    // play "right" sound effect
+    sfxRight.play();
+    feedbackEl.setAttribute('class', 'feedback show');
+    setTimeout(() => {
+      feedbackEl.setAttribute('class', 'feedback hide');
+    }, 500);
+    feedbackEl.textContent = "CORRECT!"
+    setTimeout(() => { }, 500);
+    // flash right/wrong feedback on page for half a second
 
-  if (currentQuestionIndex === 3) {
-    quizEnd();
   }
-  getQuestion();
+  
+  currentQuestionIndex++;
+
+
+  if (currentQuestionIndex === questions.length) {
+    quizEnd();
+  } else {
+    getQuestion();
+  }
   // else
   // move to next question
   // check if we've run out of questions
@@ -120,10 +133,11 @@ function questionClick(answerClicked) {
 
 function quizEnd() {
   console.log('calling quix end');
+  clearInterval(timerId);
   // show end screen
   document.querySelector('#end-screen').setAttribute('class', 'show');
   
-
+clearInterval(timerId);
   // show final score
   document.querySelector('#final-score').innerHTML=score;
 
@@ -135,27 +149,55 @@ function quizEnd() {
 
 function clockTick() {
   // update time
+  
+  time--;
+   timerEl.innerHTML= time ;
   // check if user ran out of time
+  if(timerId <=0 ){
+quizEnd();
+  }
 }
 
 function saveHighscore() {
   // get value of input box
-  document.querySelector('initials').addEventListener('input', function (evt) {
-    cosole.log(this.value);
-});
+  var initials = initialsEl.value.trim();
 
-console.log(this.value)
   // make sure value wasn't empty
-  // get saved scores from localstorage, or if not any, set to empty array
-  // format new score object for current user
-  // save to localstorage
-  // redirect to next page
+  if (initials !== " ") {
+    // get saved scores from localstorage, or if not any, set to empty array
+   JSON.parse(window.localStorage.getItem("highscores")) || [];
+
+    // format new score object for current user
+    var newScore = {
+      score: time,
+      initials: initials
+    };
+    // save to localstorage
+   
+    window.localStorage.setItem("highscores", JSON.stringify(newScore));
+
+    // redirect to next page
+    window.location.href = "highscores.html";
+  }
 }
+
+
 
 function checkForEnter(event) {
   // check if event key is enter
-  // saveHighscore
+  initialsEl.addEventListener('keypress', function (e) {
+    e.preventDefault()
+    if (e.key === 'Enter') {
+      // saveHighscore
+      saveHighscore();
+    }
+});
+  
 }
+
+
+
+
 
 // user clicks button to submit initials
 submitBtn.onclick = saveHighscore;
@@ -164,3 +206,4 @@ submitBtn.onclick = saveHighscore;
 startBtn.onclick = startQuiz;
 
 initialsEl.onkeyup = checkForEnter;
+
