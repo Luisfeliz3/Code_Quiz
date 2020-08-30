@@ -48,11 +48,12 @@ function getQuestion() {
 
   // clear out any old question choices
   document.querySelector("#choices").innerHTML = " ";
-
-for (let index = 0; index < questions[0].choices.length; index++) {
+  var choices = questions[currentQuestionIndex].choices;
+  // console.log(choices.length+ "your choices are ");
+for (let index = 0; index < choices.length; index++) {
      var choiceButtons = document.createElement('button');
     choiceButtons.setAttribute("class", "button")
-    choiceButtons.innerHTML = questions[index].choices[index];
+    choiceButtons.innerHTML = choices[index];
     document.querySelector("#choices").append(choiceButtons);
   
 }
@@ -64,13 +65,9 @@ for (let index = 0; index < questions[0].choices.length; index++) {
   // }
 
   document.querySelector("#choices").addEventListener("click", function (e) {
-    
-
     if(!e.target.matches("buttons"))
     e.preventDefault()
     questionClick(e.target.textContent);
-
-
   })  
   // loop over choices
   // create new button for each choice
@@ -80,12 +77,12 @@ for (let index = 0; index < questions[0].choices.length; index++) {
 
 function questionClick(answerClicked) {
   let questionAnswer = questions[currentQuestionIndex].answer;
+  var choices = questions[currentQuestionIndex].choices;
+  console.log(choices.length+ "your choices are ");
   //check if user guessed wrong
 
   if (answerClicked !== questionAnswer) {
-
-
-// penalize time
+// penalize time  
     time = time - 15;
     console.log(answerClicked  + "-------------------->>>>>>>>>>>>>ANSWER CLICK");
     console.log(questionAnswer+ "-------------------->>>>>>>>>>>>>QUESTION CLICK");
@@ -97,6 +94,7 @@ function questionClick(answerClicked) {
     feedbackEl.textContent = "INCORRECT!";
     setTimeout(() => { }, 500);
     score++;
+  
   }
   else {
     
@@ -111,11 +109,11 @@ function questionClick(answerClicked) {
     }, 500);
     feedbackEl.textContent = "CORRECT!"
     setTimeout(() => { }, 500);
-    // flash right/wrong feedback on page for half a second
 
   }
   
   currentQuestionIndex++;
+  choices.length++
 
 
 if (currentQuestionIndex === questions.length) {
@@ -123,12 +121,6 @@ if (currentQuestionIndex === questions.length) {
   } else {
     getQuestion();
   }
-  // else
-  // move to next question
-  // check if we've run out of questions
-  // quizEnd
-  // else
-  // getQuestion
 }
 
 function quizEnd() {
