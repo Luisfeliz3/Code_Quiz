@@ -102,7 +102,7 @@ function questionClick(answerClicked) {
     
     console.log(answerClicked.trim()  + "-------------------->>>>>>>>>>>>>ANSWER CLICK");
     console.log(questionAnswer.trim()+ "-------------------->>>>>>>>>>>>>QUESTION CLICK");
-   
+     
     // play "right" sound effect
     sfxRight.play();
     feedbackEl.setAttribute('class', 'feedback show');
@@ -118,7 +118,7 @@ function questionClick(answerClicked) {
   currentQuestionIndex++;
 
 
-  if (currentQuestionIndex === questions.length) {
+if (currentQuestionIndex === questions.length) {
     quizEnd();
   } else {
     getQuestion();
