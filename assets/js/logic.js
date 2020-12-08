@@ -49,14 +49,15 @@ function getQuestion() {
   // clear out any old question choices
   document.querySelector("#choices").innerHTML = " ";
   var choices = questions[currentQuestionIndex].choices;
+
   // console.log(choices.length+ "your choices are ");
 for (let index = 0; index < choices.length; index++) {
      var choiceButtons = document.createElement('button');
     choiceButtons.setAttribute("class", "button")
     choiceButtons.innerHTML = choices[index];
-    document.querySelector("#choices").append(choiceButtons);
-  
+    document.querySelector("#choices").append(choiceButtons);  
 }
+
   // for (const choice of questions[currentQuestionIndex].choices) {
   //   var choiceButtons = document.createElement('button');
   //   choiceButtons.setAttribute("class", "button")
@@ -175,7 +176,7 @@ function saveHighscore() {
 
 
 
-function checkForEnter(event) {
+function checkForEnter(e) {
   // check if event key is enter
   initialsEl.addEventListener('keypress', function (e) {
     e.preventDefault()
