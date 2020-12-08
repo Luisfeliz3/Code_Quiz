@@ -55,21 +55,10 @@ function getQuestion() {
     document.querySelector("#choices").append(choiceButtons);
   }
 
-  // for (const choice of questions[currentQuestionIndex].choices) {
-  //   var choiceButtons = document.createElement('button');
-  //   choiceButtons.setAttribute("class", "button")
-  //   choiceButtons.innerHTML = choice;
-  //   document.querySelector("#choices").append(choiceButtons);
-  // }
-
   document.querySelector("#choices").addEventListener("click", function (e) {
     if (!e.target.matches("buttons")) questionClick(e.target.textContent);
     e.stopImmediatePropagation();
   });
-  // loop over choices
-  // create new button for each choice
-  // attach click event listener to each choice
-  // splay on the page
 }
 
 function questionClick(answerClicked) {
@@ -78,11 +67,6 @@ function questionClick(answerClicked) {
 
   console.log(choices.length + "your choices are ");
   //check if user guessed wrong
-
-  console.log(answerClicked + "-------------------->>>>>>>>>>>>>ANSWER CLICK");
-  console.log(
-    questionAnswer + "-------------------->>>>>>>>>>>>>QUESTION CLICK"
-  );
   if (answerClicked !== questionAnswer) {
     // penalize time
     time = time - 15;
@@ -94,15 +78,7 @@ function questionClick(answerClicked) {
     }, 500);
     feedbackEl.textContent = "INCORRECT!";
     setTimeout(() => {}, 500);
-    score++;
   } else if (answerClicked === questionAnswer) {
-    console.log(
-      answerClicked.trim() + "-------------------->>>>>>>>>>>>>ANSWER CLICK"
-    );
-    console.log(
-      questionAnswer.trim() + "-------------------->>>>>>>>>>>>>QUESTION CLICK"
-    );
-
     // play "right" sound effect
     sfxRight.play();
     feedbackEl.setAttribute("class", "feedback show");
@@ -110,6 +86,7 @@ function questionClick(answerClicked) {
       feedbackEl.setAttribute("class", "feedback hide");
     }, 500);
     feedbackEl.textContent = "CORRECT!";
+    score++;
     setTimeout(() => {}, 500);
   }
 
